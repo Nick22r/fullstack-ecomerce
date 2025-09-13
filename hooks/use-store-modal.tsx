@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { User } from "@clerk/nextjs/server";
 
 interface UseStoreModalStore {
   isOpen: boolean;
