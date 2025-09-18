@@ -1,4 +1,3 @@
-import prisma from "@/lib/prismadb";
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
@@ -21,7 +20,7 @@ export async function POST (
             return new NextResponse("Name is required", {status: 400});
         }
 
-        const store = await prisma.store.create({
+        const store = await prismadb.store.create({
             data: {
                 name,
                 userId
