@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "./button";
 import { Trash, ImagePlus } from "lucide-react";
-import { CldUploadWidget } from "next-cloudinary"
-
+import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 
 interface ImageUploadProps {
-    disabled? : boolean;
+    disabled?: boolean;
     onChange: (value: string) => void;
     onRemove: (value: string) => void;
     value: string[];
@@ -21,18 +20,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     value
 }) => {
     const [isMounted, setIsMounted] = useState(false);
-    
-        useEffect( () => {
-            setIsMounted(true);
-        },[] )
-    
-        const onUpload = (result: any) => {
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    const onUpload = (result: any) => {
+        if (result?.info?.secure_url) {
             onChange(result.info.secure_url);
         }
+    };
 
-    if(!isMounted){
-            return null;
-        }
+    if (!isMounted) {
+        return null;
+    }
 
     return (
         <div>
@@ -40,11 +41,16 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 {value.map((url) => (
                     <div key={url} className="relative w-[200px] h-[200px] rounded-md overflow-hidden">
                         <div className="z-10 absolute top-2 right-2">
-                            <Button type="button" onClick={ () => onRemove(url)} variant="destructive" size="icon">
-                                <Trash className="h-2 w-4"/>
+                            <Button
+                                type="button"
+                                onClick={() => onRemove(url)}
+                                variant="destructive"
+                                size="icon"
+                            >
+                                <Trash className="h-4 w-4" />
                             </Button>
                         </div>
-                        <Image 
+                        <Image
                             fill
                             className="object-cover"
                             alt="Image"
@@ -53,11 +59,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                     </div>
                 ))}
             </div>
-            <CldUploadWidget onSuccess={onUpload} uploadPreset="dkj8ea6cs">
+            <CldUploadWidget
+                onSuccess={onUpload}
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!}
+            >
                 {({ open }) => {
                     const onClick = () => {
                         open();
-                    }
+                    };
                     return (
                         <Button
                             type="button"
@@ -65,14 +74,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                             variant="secondary"
                             onClick={onClick}
                         >
-                            <ImagePlus className="h-4 w-4 mr-2"/>
-                            Upload and Image
+                            <ImagePlus className="h-4 w-4 mr-2" />
+                            Upload an Image
                         </Button>
-                    )
-                } }
+                    );
+                }}
             </CldUploadWidget>
         </div>
-    )
-}
+    );
+};
 
 export default ImageUpload;
